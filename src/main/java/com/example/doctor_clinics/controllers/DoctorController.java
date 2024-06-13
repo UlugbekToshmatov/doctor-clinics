@@ -19,7 +19,6 @@ public class DoctorController {
 
 
     @PostMapping
-//    @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<DoctorResponse> createProfile(@RequestPart("image-file") MultipartFile imageFile, @RequestPart("form") @Valid CreateProfileForm form) {
         return new ResponseEntity<>(doctorService.createProfile(imageFile, form), HttpStatus.CREATED);
     }
@@ -32,5 +31,10 @@ public class DoctorController {
     @PatchMapping("{doc-id}")
     public ResponseEntity<DoctorResponse> updateById(@RequestBody UpdateDoctorForm form, @PathVariable("doc-id") Long id) {
         return new ResponseEntity<>(doctorService.updateById(form, id), HttpStatus.OK);
+    }
+
+    @PatchMapping("update/image/{doc-id}")
+    public ResponseEntity<DoctorResponse> updateProfileImageById(@PathVariable("doc-id") Long docId, @RequestParam("image-file") MultipartFile imageFile) {
+        return new ResponseEntity<>(doctorService.updateImageById(docId, imageFile), HttpStatus.OK);
     }
 }

@@ -1,9 +1,7 @@
 package com.example.doctor_clinics.services.implementations;
 
 import com.example.doctor_clinics.components.Minio;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +16,7 @@ public class MinioService {
     private String bucket;
 
 
-    public void upload(MultipartFile file, String path) {
+    public void uploadImage(MultipartFile file, String path) {
         try {
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                 .bucket(bucket)
@@ -28,6 +26,27 @@ public class MinioService {
                 .build();
 
             minio.getClient().putObject(putObjectArgs);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeImage(String imageUrl) {
+        StatObjectArgs statObjectArgs = StatObjectArgs.builder()
+            .bucket(bucket)
+            .object(imageUrl)
+            .build();
+
+        try {
+            StatObjectResponse statObjectResponse = minio.getClient().statObject(statObjectArgs);
+            if (statObjectResponse != null) {
+                RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(imageUrl)
+                    .build();
+
+                minio.getClient().removeObject(removeObjectArgs);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

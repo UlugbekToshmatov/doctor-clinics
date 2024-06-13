@@ -5,6 +5,7 @@ import com.example.doctor_clinics.dtos.doctor.CreateProfileForm;
 import com.example.doctor_clinics.dtos.doctor.DoctorResponse;
 import com.example.doctor_clinics.dtos.doctor.UpdateDoctorForm;
 import com.example.doctor_clinics.entities.Doctor;
+import com.example.doctor_clinics.entities.DoctorWithOldImageUrl;
 import com.example.doctor_clinics.repositories.DoctorRepository;
 import com.example.doctor_clinics.services.DoctorService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.create(DoctorDTOmapper.mapToDoctor(form, imageUrl));
 
         // if successful, save the image file to minio
-        minioService.upload(imageFile, imageUrl);
+        minioService.uploadImage(imageFile, imageUrl);
 
         return DoctorDTOmapper.mapToResponse(doctor);
     }
@@ -42,5 +43,14 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorResponse updateById(UpdateDoctorForm form, Long id) {
         return DoctorDTOmapper.mapToResponse(doctorRepository.update(DoctorDTOmapper.mapToDoctor(form, id)));
+    }
+
+    @Override
+    public DoctorResponse updateImageById(Long docId, MultipartFile imageFile) {
+        String newImageUrl = UUID.randomUUID() + "/" + imageFile.getOriginalFilename();
+        DoctorWithOldImageUrl doctor = doctorRepository.updateProfileImageById(docId, newImageUrl);
+        minioService.removeImage(doctor.getOldImageUrl());
+        minioService.uploadImage(imageFile, newImageUrl);
+        return DoctorDTOmapper.mapToResponse(doctor.getDoctor());
     }
 }

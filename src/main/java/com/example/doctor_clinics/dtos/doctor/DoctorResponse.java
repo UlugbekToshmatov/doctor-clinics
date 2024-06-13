@@ -16,7 +16,7 @@ public class DoctorResponse {
     private String lastName;
     private String patronymic;
     private Date dateOfBirth;
-    private String pictureUrl;
+    private String imageUrl;
     private String scientificDegree;
     private String phoneNumber;
     private String email;

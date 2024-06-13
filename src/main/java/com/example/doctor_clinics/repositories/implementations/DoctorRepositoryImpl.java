@@ -1,6 +1,7 @@
 package com.example.doctor_clinics.repositories.implementations;
 
 import com.example.doctor_clinics.entities.Doctor;
+import com.example.doctor_clinics.entities.DoctorWithOldImageUrl;
 import com.example.doctor_clinics.repositories.DoctorRepository;
 import com.example.doctor_clinics.row_mappers.DoctorRowMapper;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,35 @@ public class DoctorRepositoryImpl implements DoctorRepository<Doctor> {
             throw new RuntimeException("Doctor with id=" + data.getId() + " not fount");
         } catch (Exception exception) {
             throw new RuntimeException("An error occurred while updating profile!");
+        }
+    }
+
+    @Override
+    public DoctorWithOldImageUrl updateProfileImageById(Long docId, String imageUrl) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate.getJdbcTemplate())
+            .withProcedureName("update_doctor_image_by_id")
+            .declareParameters(
+                new SqlParameter("in_doc_id", Types.NUMERIC),
+                new SqlParameter("in_picture_url", Types.VARCHAR),
+                new SqlOutParameter("out_old_picture_url", Types.VARCHAR),
+                new SqlOutParameter("out_response", OracleTypes.CURSOR)
+            )
+            .returningResultSet("out_response", new DoctorRowMapper());
+
+
+        try {
+            Map<String, Object> result = jdbcCall.execute(Map.of("in_doc_id", docId, "in_picture_url", imageUrl));
+            String oldImageUrl = (String) result.get("out_old_picture_url");
+            List<Doctor> doctors = (List<Doctor>) result.get("out_response");
+            return DoctorWithOldImageUrl.builder()
+                .doctor(doctors.isEmpty() ? null : doctors.get(0))
+                .oldImageUrl(oldImageUrl)
+                .build();
+
+        } catch (DataIntegrityViolationException exception) {
+            throw new RuntimeException("Doctor with id=" + docId + " not fount");
+        } catch (Exception exception) {
+            throw new RuntimeException("An error occurred while updating profile image!");
         }
     }
 
