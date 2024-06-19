@@ -3,7 +3,7 @@ package com.example.doctor_clinics.dto_mappers;
 import com.example.doctor_clinics.dtos.doctor.CreateProfileForm;
 import com.example.doctor_clinics.dtos.doctor.DoctorResponse;
 import com.example.doctor_clinics.dtos.doctor.UpdateDoctorForm;
-import com.example.doctor_clinics.entities.Doctor;
+import com.example.doctor_clinics.entities.doctor.Doctor;
 import org.springframework.beans.BeanUtils;
 
 public class DoctorDTOmapper {

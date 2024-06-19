@@ -1,4 +1,4 @@
-package com.example.doctor_clinics.entities;
+package com.example.doctor_clinics.entities.doctor;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.example.doctor_clinics.row_mappers;
 
-import com.example.doctor_clinics.entities.Doctor;
+import com.example.doctor_clinics.entities.doctor.Doctor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;

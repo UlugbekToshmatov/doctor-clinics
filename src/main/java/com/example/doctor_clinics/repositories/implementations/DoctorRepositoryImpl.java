@@ -1,7 +1,7 @@
 package com.example.doctor_clinics.repositories.implementations;
 
-import com.example.doctor_clinics.entities.Doctor;
-import com.example.doctor_clinics.entities.DoctorWithOldImageUrl;
+import com.example.doctor_clinics.entities.doctor.Doctor;
+import com.example.doctor_clinics.entities.doctor.DoctorWithOldImageUrl;
 import com.example.doctor_clinics.repositories.DoctorRepository;
 import com.example.doctor_clinics.row_mappers.DoctorRowMapper;
 import lombok.RequiredArgsConstructor;
