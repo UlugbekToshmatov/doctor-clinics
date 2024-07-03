@@ -1,8 +1,8 @@
 package com.example.doctor_clinics.controllers;
 
 import com.example.doctor_clinics.dtos.HttpResponse;
+import com.example.doctor_clinics.dtos.education.EducationRequestForm;
 import com.example.doctor_clinics.dtos.education.EducationResponse;
-import com.example.doctor_clinics.dtos.education.EducationForm;
 import com.example.doctor_clinics.services.EducationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +20,8 @@ public class EducationController {
 
 
     @PostMapping("edu/{doc-id}")
-    public ResponseEntity<HttpResponse> addEducation(@PathVariable("doc-id") Long docId, @RequestBody EducationForm form) {
-        EducationResponse educationResponse = educationService.addEducationById(docId, form);
+    public ResponseEntity<HttpResponse> addEducation(@PathVariable("doc-id") Long docId, @RequestBody EducationRequestForm form) {
+        EducationResponse educationResponse = educationService.addEducationByDocId(docId, form);
 
         return new ResponseEntity<>(
             HttpResponse.builder()
@@ -33,6 +33,21 @@ public class EducationController {
                 .build(),
             HttpStatus.CREATED
         );
+    }
 
+
+    @GetMapping("edu/{doc-id}")
+    public ResponseEntity<HttpResponse> getEducationalHistoryByDocId(@PathVariable("doc-id") Long docId) {
+        EducationResponse educationResponse = educationService.getEducationalHistoriesByDocId(docId);
+
+        return ResponseEntity.ok(
+            HttpResponse.builder()
+                .timeStamp(LocalDateTime.now().toString())
+                .httpStatus(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .message("Educational background retrieved successfully")
+                .data(Map.of("education", educationResponse))
+                .build()
+        );
     }
 }

@@ -1,6 +1,5 @@
 package com.example.doctor_clinics.dtos.education;
 
-import com.example.doctor_clinics.dtos.education.EducationForm;
 import lombok.*;
 
 import java.util.List;
@@ -12,5 +11,5 @@ import java.util.List;
 @Builder
 public class EducationResponse {
     private Long docId;
-    private List<EducationForm> educationList;
+    private List<EducationResponseForm> educationList;
 }

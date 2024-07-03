@@ -1,6 +1,6 @@
 package com.example.doctor_clinics.repositories.implementations;
 
-import com.example.doctor_clinics.dtos.education.EducationForm;
+import com.example.doctor_clinics.dtos.education.EducationRequestForm;
 import com.example.doctor_clinics.entities.education.Education;
 import com.example.doctor_clinics.repositories.EducationRepository;
 import com.example.doctor_clinics.row_mappers.EducationRowMapper;
@@ -26,7 +26,7 @@ public class EducationRepositoryImpl implements EducationRepository<Education> {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Education> addEducationHistoryById(Long docId, EducationForm form) {
+    public List<Education> addEducationHistoryByDocId(Long docId, EducationRequestForm form) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate.getJdbcTemplate())
             .withProcedureName("add_education_by_doctor_id")
             .declareParameters(getParametersToAddEducation())
@@ -37,6 +37,27 @@ public class EducationRepositoryImpl implements EducationRepository<Education> {
             return  (List<Education>) result.get("out_education_list");
         } catch (DuplicateKeyException exception) {
             throw new RuntimeException("Educational background already added");
+        } catch (DataIntegrityViolationException exception) {
+            throw new RuntimeException("Doctor with id=" + docId + " not found");
+        } catch (Exception exception) {
+            throw new RuntimeException("An error occurred while adding educational background!");
+        }
+    }
+
+    @Override
+    public List<Education> getEducationalHistoriesByDocId(Long docId) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate.getJdbcTemplate())
+            .withProcedureName("get_educational_background_by_doctor_id")
+            .declareParameters(
+                new SqlParameter("in_doc_id", Types.NUMERIC),
+                new SqlOutParameter("out_education_list", OracleTypes.CURSOR)
+            )
+            .returningResultSet("out_education_list", new EducationRowMapper());
+
+        try {
+            SqlParameterSource parameterSource = new MapSqlParameterSource().addValue("in_doc_id", docId);
+            Map<String, Object> result = jdbcCall.execute(parameterSource);
+            return  (List<Education>) result.get("out_education_list");
         } catch (DataIntegrityViolationException exception) {
             throw new RuntimeException("Doctor with id=" + docId + " not found");
         } catch (Exception exception) {
@@ -56,7 +77,7 @@ public class EducationRepositoryImpl implements EducationRepository<Education> {
         };
     }
 
-    private SqlParameterSource getSqlParameterSourceToAddEducation(Long docId, EducationForm form) {
+    private SqlParameterSource getSqlParameterSourceToAddEducation(Long docId, EducationRequestForm form) {
         return new MapSqlParameterSource(
             Map.of(
                 "in_doc_id", docId,

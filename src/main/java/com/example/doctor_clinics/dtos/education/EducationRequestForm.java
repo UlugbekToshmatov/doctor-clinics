@@ -1,19 +1,16 @@
-package com.example.doctor_clinics.entities.education;
+package com.example.doctor_clinics.dtos.education;
 
 import lombok.*;
 
 import java.util.Date;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
-public class Education {
-    private Long docId;
-    private Long eduId;
+public class EducationRequestForm {
     private String institutionName;
-    private Long specId;
     private String field;
     private String degree;
     private Date startDate;

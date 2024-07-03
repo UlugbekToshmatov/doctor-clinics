@@ -9,8 +9,10 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
-public class EducationForm {
+public class EducationResponseForm {
+    private Long eduId;
     private String institutionName;
+    private Long specId;
     private String field;
     private String degree;
     private Date startDate;
