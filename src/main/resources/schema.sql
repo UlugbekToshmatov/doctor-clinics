@@ -50,14 +50,19 @@ CREATE TABLE specialization (
     CONSTRAINT ck_spec_degree CHECK (degree in ('BACHELOR', 'MASTER', 'PHD', 'PROFESSOR'))
 );
 
+CREATE SEQUENCE seq_doctor_spec_id
+    MINVALUE 1
+    START WITH 1
+    INCREMENT BY 1;
 
 CREATE TABLE doctor_spec (
-    doctor_id    NUMBER NOT NULL,
-    spec_id      NUMBER NOT NULL,
-    edu_id       NUMBER NOT NULL,
-    start_date   DATE NOT NULL,
-    end_date     DATE NOT NULL,
-    CONSTRAINT   fk_doctor_spec_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctor (doctor_id),
-    CONSTRAINT   fk_doctor_spec_spec_id FOREIGN KEY (spec_id) REFERENCES specialization (spec_id),
-    CONSTRAINT   fk_doctor_spec_edu_id FOREIGN KEY (edu_id) REFERENCES education (edu_id)
+    doctor_spec_id NUMBER DEFAULT SEQ_DOCTOR_SPEC_ID.NEXTVAL CONSTRAINT pk_doctor_spec_id PRIMARY KEY;
+    doctor_id      NUMBER NOT NULL,
+    spec_id        NUMBER NOT NULL,
+    edu_id         NUMBER NOT NULL,
+    start_date     DATE NOT NULL,
+    end_date       DATE NOT NULL,
+    CONSTRAINT     fk_doctor_spec_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctor (doctor_id),
+    CONSTRAINT     fk_doctor_spec_spec_id FOREIGN KEY (spec_id) REFERENCES specialization (spec_id),
+    CONSTRAINT     fk_doctor_spec_edu_id FOREIGN KEY (edu_id) REFERENCES education (edu_id)
 );
